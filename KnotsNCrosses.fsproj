@@ -11,6 +11,7 @@
     <Compile Include="Actions/SqaureActions.fs" />
     <Compile Include="Actions/BoardActions.fs" />
     <Compile Include="Actions/ScreenActions.fs" />
+    <Compile Include="Actions/GameActions.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

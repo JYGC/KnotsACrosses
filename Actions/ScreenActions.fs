@@ -4,8 +4,14 @@ open System
 open KnotsNCrosses.Models
 
 module ScreenActions =
-  let printSqaure (square: Square) =
-    Console.BackgroundColor <- ConsoleColor.DarkGray
+  let private selectSqaureColor (square: Square) =
+    if square.Selected then
+      ConsoleColor.Green
+    else
+      ConsoleColor.DarkGray
+
+  let private printSqaure (square: Square) =
+    Console.BackgroundColor <- selectSqaureColor square
     square.Positions
     |> List.iter(fun p ->
       Console.SetCursorPosition p

@@ -27,18 +27,18 @@ type Knot(squareStartingPosition: (int * int)) =
         (x + 2, y + 4); (x + 3, y + 4); (x + 4, y + 4)]
 
 type Square(startingPosition: (int * int), size: int, selected: bool, mark: IMark) =
+  let (startingX, startingY) = startingPosition
+  let squareWidthSpan = [startingX..startingX + size]
+  let squareHeightSpan = [startingY..startingY + size]
+  let topWall =
+    squareWidthSpan |> List.map(fun x -> (x, startingY))
+  let rightWall =
+    squareHeightSpan |> List.map(fun y -> (startingX + size, y))
+  let bottomWall =
+    squareWidthSpan |> List.map(fun x -> (x, startingY + size))
+  let leftWall =
+    squareHeightSpan |> List.map(fun y -> (startingX, y))
   let positions =
-    let (startingX, startingY) = startingPosition
-    let squareWidthSpan = [startingX..startingX + size]
-    let squareHeightSpan = [startingY..startingY + size]
-    let topWall =
-      squareWidthSpan |> List.map(fun x -> (x, startingY))
-    let rightWall =
-      squareHeightSpan |> List.map(fun y -> (startingX + size, y))
-    let bottomWall =
-      squareWidthSpan |> List.map(fun x -> (x, startingY + size))
-    let leftWall =
-      squareHeightSpan |> List.map(fun y -> (startingX, y))
     topWall
     |> List.append rightWall
     |> List.append leftWall
