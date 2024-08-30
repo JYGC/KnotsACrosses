@@ -24,24 +24,29 @@ module GameActions =
   let rec setNextGameState (oldBoard: Board) =
     ScreenActions.printBoard oldBoard
     let keyPress = (Console.ReadKey())
+    let selectedGridPosition = BoardActions.getSelectedGridPosition oldBoard
     let proposedNewSelectedGridPosition =
       getNewSelectedGridPosition
-        (oldBoard.GetSelectedGridPosition())
+        selectedGridPosition
         keyPress
     let newSelectedGridPosition =
       if isNewSelectedGridPositionOutOfBounds proposedNewSelectedGridPosition then
-        oldBoard.GetSelectedGridPosition()
+        selectedGridPosition
       else
         proposedNewSelectedGridPosition
     let playerAddMark = keyPress.Key = ConsoleKey.Spacebar
-    setNextGameState (
+    
+    let newSquares =
+      SquareActions.createNewSquareGridWhenPlayerAction
+        newSelectedGridPosition
+        playerAddMark 
+        oldBoard
+    let newBoard =
       BoardActions.createBoard 
-        (SquareActions.createNewSquareGridWhenPlayerAction
-          newSelectedGridPosition
-          playerAddMark 
-          oldBoard)
+        newSquares
         oldBoard.IsPlayerCross
-    )
+    setNextGameState newBoard
+
     
 
   let startGame () =
