@@ -1,8 +1,8 @@
 namespace KnotsNCrosses.Models
 
-type Board(squares: Map<(int * int), Square>, isPlayerCross: bool) =
+type Board(squares: Map<(int * int), Square>, isPlayerCrossTurn: bool) =
   member _.Squares
     with get() = squares
   
-  member _.IsPlayerCross
-    with get() = isPlayerCross
+  member _.IsPlayerCrossTurn
+    with get() = isPlayerCrossTurn

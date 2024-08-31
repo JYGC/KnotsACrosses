@@ -29,7 +29,7 @@ module SquareActions =
 
   let private getSquareMark (isNewSelectedGridPosition: bool) (playerAddMark: bool) (oldSquare: Square) (board: Board): IMark =
     if isNewSelectedGridPosition && playerAddMark then
-      if board.IsPlayerCross then
+      if board.IsPlayerCrossTurn then
         new Cross(oldSquare.ConsoleStartingPosition)
       else
         new Knot(oldSquare.ConsoleStartingPosition)
