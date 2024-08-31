@@ -73,10 +73,10 @@ module GameActions =
       let keyPress = (Console.ReadKey())
       let (playerAddMark, newSelectedGridPosition) =
         getResultsOfPlayerAction keyPress oldBoard
-      oldBoard
-      |> SquareActions.createNewSquareGridWhenPlayerAction
+      SquareActions.createNewSquareGridWhenPlayerAction
         newSelectedGridPosition
         playerAddMark
+        oldBoard
       |> BoardActions.createBoard oldBoard.IsPlayerCross
       |> setNextGameState
 
