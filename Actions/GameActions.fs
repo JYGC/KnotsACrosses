@@ -21,9 +21,7 @@ module GameActions =
     let (newX, newY) = newSelectedGridPosition
     newX < minX || newX > maxX || newY < minY || newY > maxY
   
-  let rec setNextGameState (oldBoard: Board) =
-    ScreenActions.printBoard oldBoard
-    let keyPress = (Console.ReadKey())
+  let getResultsOfPlayerAction (keyPress: ConsoleKeyInfo) (oldBoard: Board) =
     let oldSelectedGridPosition = BoardActions.getSelectedGridPosition oldBoard
     let proposedNewSelectedGridPosition =
       getNewSelectedGridPosition
@@ -35,18 +33,19 @@ module GameActions =
       else
         proposedNewSelectedGridPosition
     let playerAddMark = keyPress.Key = ConsoleKey.Spacebar
-    let newSquares =
-      SquareActions.createNewSquareGridWhenPlayerAction
-        newSelectedGridPosition
-        playerAddMark 
-        oldBoard
-    let newBoard =
-      BoardActions.createBoard 
-        newSquares
-        oldBoard.IsPlayerCross
-    setNextGameState newBoard
-
-    
+    (playerAddMark, newSelectedGridPosition)
+  
+  let rec setNextGameState (oldBoard: Board) =
+    ScreenActions.printBoard oldBoard
+    let keyPress = (Console.ReadKey())
+    let (playerAddMark, newSelectedGridPosition) =
+      getResultsOfPlayerAction keyPress oldBoard
+    oldBoard
+    |> SquareActions.createNewSquareGridWhenPlayerAction
+      newSelectedGridPosition
+      playerAddMark
+    |> BoardActions.createBoard oldBoard.IsPlayerCross
+    |> setNextGameState
 
   let startGame () =
     let random = new Random()

@@ -9,7 +9,7 @@ module BoardActions =
       isPlayerCross
     )
   
-  let createBoard (squares: Map<(int * int), Square>) (isPlayerCross: bool) =
+  let createBoard (isPlayerCross: bool) (squares: Map<(int * int), Square>) =
     new Board(
       squares,
       isPlayerCross
