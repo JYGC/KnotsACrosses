@@ -36,16 +36,16 @@ module GameActions =
     (playerAddMark, newSelectedGridPosition)
 
   let private hasPlayerNeetFormation (oldBoard: Board) (gridFormation: (int * int) list) =
-      gridFormation
-      |> List.map(fun p ->
-        oldBoard.Squares[p].Mark
-      )
-      |> List.forall(fun m ->
-        if oldBoard.IsPlayerCross then
-          m :? Cross
-        else
-          m :? Knot
-      )
+    gridFormation
+    |> List.map(fun p ->
+      oldBoard.Squares[p].Mark
+    )
+    |> List.forall(fun m ->
+      if oldBoard.IsPlayerCross then
+        m :? Cross
+      else
+        m :? Knot
+    )
 
 
   let hasPlayerWon (oldBoard: Board) =
