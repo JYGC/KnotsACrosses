@@ -27,5 +27,7 @@ module ScreenActions =
   let printBoard (board: Board) =
     Console.Clear()
     board.Squares
-    |> List.iter(fun r ->
-      r |> List.iter printSqaure)
+    |> Map.toList
+    |> List.iter(fun (p, s) ->
+      printSqaure s
+    )

@@ -9,7 +9,7 @@ module BoardActions =
       isPlayerCross
     )
   
-  let createBoard (squares: Square list list) (isPlayerCross: bool) =
+  let createBoard (squares: Map<(int * int), Square>) (isPlayerCross: bool) =
     new Board(
       squares,
       isPlayerCross
@@ -17,11 +17,6 @@ module BoardActions =
   
   let getSelectedGridPosition (board: Board) =
     board.Squares
-    |> List.indexed
-    |> List.map(fun (gridY, row) ->
-      row
-      |> List.indexed
-      |> List.map(fun (gridX, s) -> ((gridX, gridY), s.Selected)))
-    |> List.reduce List.append
-    |> List.find(fun (_, selected) -> selected)
+    |> Map.toList
+    |> List.find(fun (_, s) -> s.Selected)
     |> fst

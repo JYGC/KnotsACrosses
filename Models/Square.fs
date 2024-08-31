@@ -26,8 +26,8 @@ type Knot(squareStartingPosition: (int * int)) =
         (x + 2, y + 3); (x + 4, y + 3);
         (x + 2, y + 4); (x + 3, y + 4); (x + 4, y + 4)]
 
-type Square(startingPosition: (int * int), size: int, selected: bool, mark: IMark) =
-  let (startingX, startingY) = startingPosition
+type Square(consoleStartingPosition: (int * int), size: int, selected: bool, mark: IMark) =
+  let (startingX, startingY) = consoleStartingPosition
   let squareWidthSpan = [startingX..startingX + size]
   let squareHeightSpan = [startingY..startingY + size]
   let topWall =
@@ -44,8 +44,8 @@ type Square(startingPosition: (int * int), size: int, selected: bool, mark: IMar
     |> List.append leftWall
     |> List.append bottomWall
 
-  member _.StartingPosition
-    with get() = startingPosition
+  member _.ConsoleStartingPosition
+    with get() = consoleStartingPosition
   
   member _.Size
     with get() = size

@@ -1,6 +1,6 @@
 namespace KnotsNCrosses.Models
 
-type Board(squares: Square list list, isPlayerCross: bool) =
+type Board(squares: Map<(int * int), Square>, isPlayerCross: bool) =
   member _.Squares
     with get() = squares
   
