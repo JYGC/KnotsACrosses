@@ -4,7 +4,7 @@ open System
 open KnotsNCrosses.Models
 
 module GameActions =
-  let getNewSelectedGridPosition (oldSelectedGridPosition: int * int) (keyPress: ConsoleKeyInfo) =
+  let private getNewSelectedGridPosition (oldSelectedGridPosition: int * int) (keyPress: ConsoleKeyInfo) =
     let (oldX, oldY) = oldSelectedGridPosition
     match keyPress.Key with
     | ConsoleKey.UpArrow -> (oldX, oldY - 1)
@@ -13,7 +13,7 @@ module GameActions =
     | ConsoleKey.LeftArrow -> (oldX - 1, oldY)
     | _ -> (oldX, oldY)
   
-  let isNewSelectedGridPositionOutOfBounds (newSelectedGridPosition: int * int) =
+  let private isNewSelectedGridPositionOutOfBounds (newSelectedGridPosition: int * int) =
     let minX = 0
     let maxX = 2
     let minY = 0
@@ -45,7 +45,7 @@ module GameActions =
     
     (playerAddMark, newSelectedGridPosition, nextTurnIsPlayerCross)
 
-  let private hasPlayerNeetFormation (markType: Type) (oldBoard: Board) (gridFormation: (int * int) list) =
+  let private hasPlayerMeetFormation (markType: Type) (oldBoard: Board) (gridFormation: (int * int) list) =
     gridFormation
     |> List.map(fun p ->
       oldBoard.Squares[p].Mark
@@ -54,25 +54,37 @@ module GameActions =
       m.GetType() = markType
     )
 
+  let private getWinningFormations () =
+    [
+      [(0, 0); (1, 0); (2, 0)]; [(0, 1); (1, 1); (2, 1)]; [(0, 2); (1, 2); (2, 2)];
+      [(0, 0); (0, 1); (0, 2)]; [(1, 0); (1, 1); (1, 2)]; [(2, 0); (2, 1); (2, 2)];
+      [(0, 0); (1, 1); (2, 2)]; [(0, 2); (1, 1); (2, 0)]
+    ]
 
-  let hasPlayerWon (markType: Type) (oldBoard: Board) =
-    let winningFormations =
-      [
-        [(0, 0); (1, 0); (2, 0)]; [(0, 1); (1, 1); (2, 1)]; [(0, 2); (1, 2); (2, 2)];
-        [(0, 0); (0, 1); (0, 2)]; [(1, 0); (1, 1); (1, 2)]; [(2, 0); (2, 1); (2, 2)];
-        [(0, 0); (1, 1); (2, 2)]; [(0, 2); (1, 1); (2, 0)]
-      ]
-    winningFormations
+  let private isGameWonByPlayer (playerMarkType: Type) (oldBoard: Board) =
+    getWinningFormations()
     |> List.exists(fun formation ->
-      hasPlayerNeetFormation markType oldBoard formation = true
+      hasPlayerMeetFormation playerMarkType oldBoard formation = true
     )
   
-  let rec setNextGameState (oldBoard: Board) =
+  let private isBoardFilled (oldBoard: Board) =
+    oldBoard.Squares
+    |> Map.toList
+    |> List.forall(fun (_, s) -> not (s.Mark :? Space))
+
+  let private isGameDraw (oldBoard: Board) =
+    isBoardFilled(oldBoard)
+    && not (isGameWonByPlayer typeof<Cross> oldBoard)
+    && not (isGameWonByPlayer typeof<Knot> oldBoard)
+  
+  let rec private setNextGameState (oldBoard: Board) =
     ScreenActions.printBoard oldBoard
-    if hasPlayerWon typeof<Cross> oldBoard then
-      Console.WriteLine "Player cross won."
-    elif hasPlayerWon typeof<Knot> oldBoard then
-      Console.WriteLine "Player knot won."
+    if isGameWonByPlayer typeof<Cross> oldBoard then
+      ScreenActions.printWinningMessage typeof<Cross>
+    elif isGameWonByPlayer typeof<Knot> oldBoard then
+      ScreenActions.printWinningMessage typeof<Knot>
+    elif isGameDraw oldBoard then
+      ScreenActions.printGameDrawMessage()
     else
       let keyPress = (Console.ReadKey())
       let (playerAddMark, newSelectedGridPosition, nextTurnIsPlayerCross) =
