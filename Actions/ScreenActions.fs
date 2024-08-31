@@ -28,6 +28,6 @@ module ScreenActions =
     Console.Clear()
     board.Squares
     |> Map.toList
-    |> List.iter(fun (p, s) ->
+    |> List.iter(fun (_, s) ->
       printSqaure s
     )

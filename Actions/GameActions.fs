@@ -34,18 +34,51 @@ module GameActions =
         proposedNewSelectedGridPosition
     let playerAddMark = keyPress.Key = ConsoleKey.Spacebar
     (playerAddMark, newSelectedGridPosition)
+
+  let private hasPlayerNeetFormation (oldBoard: Board) (gridFormation: (int * int) list) =
+      gridFormation
+      |> List.map(fun p ->
+        oldBoard.Squares[p].Mark
+      )
+      |> List.forall(fun m ->
+        if oldBoard.IsPlayerCross then
+          m :? Cross
+        else
+          m :? Knot
+      )
+
+
+  let hasPlayerWon (oldBoard: Board) =
+    let winningFormations =
+      [
+        [(0, 0); (1, 0); (2, 0)]; [(0, 1); (1, 1); (2, 1)]; [(0, 2); (1, 2); (2, 2)];
+        [(0, 0); (0, 1); (0, 2)]; [(1, 0); (1, 1); (1, 2)]; [(2, 0); (2, 1); (2, 2)];
+        [(0, 0); (1, 1); (2, 2)]; [(0, 2); (1, 1); (2, 0)]
+      ]
+    winningFormations
+    |> List.exists(fun formation ->
+      hasPlayerNeetFormation oldBoard formation = true
+    )
   
   let rec setNextGameState (oldBoard: Board) =
     ScreenActions.printBoard oldBoard
-    let keyPress = (Console.ReadKey())
-    let (playerAddMark, newSelectedGridPosition) =
-      getResultsOfPlayerAction keyPress oldBoard
-    oldBoard
-    |> SquareActions.createNewSquareGridWhenPlayerAction
-      newSelectedGridPosition
-      playerAddMark
-    |> BoardActions.createBoard oldBoard.IsPlayerCross
-    |> setNextGameState
+    if hasPlayerWon oldBoard then
+      let playerName =
+        if oldBoard.IsPlayerCross then
+          "Cross"
+        else
+          "Knot"
+      Console.WriteLine $"Player {playerName} won."
+    else
+      let keyPress = (Console.ReadKey())
+      let (playerAddMark, newSelectedGridPosition) =
+        getResultsOfPlayerAction keyPress oldBoard
+      oldBoard
+      |> SquareActions.createNewSquareGridWhenPlayerAction
+        newSelectedGridPosition
+        playerAddMark
+      |> BoardActions.createBoard oldBoard.IsPlayerCross
+      |> setNextGameState
 
   let startGame () =
     let random = new Random()
